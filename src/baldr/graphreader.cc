@@ -7,30 +7,55 @@
 #include <boost/filesystem.hpp>
 
 #include <valhalla/midgard/logging.h>
+#include <valhalla/midgard/sequence.h>
+
 #include "baldr/connectivity_map.h"
 using namespace valhalla::baldr;
 
 namespace {
   constexpr size_t DEFAULT_MAX_CACHE_SIZE = 1073741824; //1 gig
   constexpr size_t AVERAGE_TILE_SIZE = 2097152; //2 megs
+  constexpr size_t AVERAGE_MM_TILE_SIZE = 1024; //1k
 }
 
 namespace valhalla {
 namespace baldr {
 
+struct GraphReader::tile_extract_t : public midgard::tar {
+  tile_extract_t(const boost::property_tree::ptree& pt):tar(pt.get<std::string>("tile_extract","")) {
+    if(mm.get() == nullptr && pt.get_optional<std::string>("tile_extract"))
+      LOG_INFO("Could not load tile extract");
+    LOG_INFO("Tile extract loaded");
+    for(auto& c : contents) {
+      try {
+        auto id = GraphTile::GetTileId(c.first, "");
+        tiles[id] = std::make_pair(const_cast<char*>(c.second.first), c.second.second);
+      }
+      catch(...){}
+    }
+  }
+  // TODO: dont remove constness, and actually make graphtile read only?
+  std::unordered_map<uint64_t, std::pair<char*, size_t> > tiles;
+};
+
+std::shared_ptr<const GraphReader::tile_extract_t> GraphReader::get_extract_instance(const boost::property_tree::ptree& pt) {
+  static std::shared_ptr<const GraphReader::tile_extract_t> tile_extract(new GraphReader::tile_extract_t(pt));
+  return tile_extract;
+}
+
 // Constructor using separate tile files
 GraphReader::GraphReader(const boost::property_tree::ptree& pt)
     : tile_hierarchy_(pt.get<std::string>("tile_dir")),
       cache_size_(0),
-      shared_tiles_(SharedTiles::get_shared_tiles(pt)) {
+      tile_extract_(get_extract_instance(pt)) {
   max_cache_size_ = pt.get<size_t>("max_cache_size", DEFAULT_MAX_CACHE_SIZE);
 
   // Reserve cache (based on whether using individual tile files or shared,
   // mmap'd file
-  if (shared_tiles_.get_tile_ptr() != nullptr) {
-    cache_.reserve(max_cache_size_/1000);
+  if (!tile_extract_->contents.empty()) {
+    cache_.reserve(max_cache_size_/AVERAGE_MM_TILE_SIZE);
   } else {
-    // Assume avg of 10 megs per tile
+    // Assume avg of 2 megs per tile
     cache_.reserve(max_cache_size_/AVERAGE_TILE_SIZE);
   }
 }
@@ -52,33 +77,39 @@ const GraphTile* GraphReader::GetGraphTile(const GraphId& graphid) {
   //TODO: clear the cache automatically once we become overcommitted by a certain amount
 
   // Check if the level/tileid combination is in the cache
-  auto cached = cache_.find(graphid.Tile_Base());
+  auto base = graphid.Tile_Base();
+  auto cached = cache_.find(base);
   if(cached != cache_.end()) {
     return &cached->second;
   }
 
   // It wasn't in cache so create a GraphTile object.
-  if (shared_tiles_.get_tile_ptr() != nullptr) {
+  if (!tile_extract_->contents.empty()) {
+    // Do we have this tile
+    auto t = tile_extract_->tiles.find(base);
+    if(t == tile_extract_->tiles.cend())
+      return nullptr;
+
     // This initializes the tile from mmap
-    GraphTile tile(graphid, shared_tiles_);
+    GraphTile tile(base, t->second.first, t->second.second);
     if (tile.size() == 0) {
       return nullptr;
     }
 
     // Keep a copy in the cache and return it
-    cache_size_ += 1000; // tile.size();  // TODO what size??
-    auto inserted = cache_.emplace(graphid.Tile_Base(), std::move(tile));
+    cache_size_ += AVERAGE_MM_TILE_SIZE; // tile.size();  // TODO what size??
+    auto inserted = cache_.emplace(base, std::move(tile));
     return &inserted.first->second;
   } else {
     // This reads the tile from disk
-    GraphTile tile(tile_hierarchy_, graphid);
+    GraphTile tile(tile_hierarchy_, base);
     if (tile.size() == 0) {
       return nullptr;
     }
 
     // Keep a copy in the cache and return it
     cache_size_ += tile.size();
-    auto inserted = cache_.emplace(graphid.Tile_Base(), std::move(tile));
+    auto inserted = cache_.emplace(base, std::move(tile));
     return &inserted.first->second;
   }
 }

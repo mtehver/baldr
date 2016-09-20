@@ -6,7 +6,6 @@
 #include <valhalla/baldr/graphid.h>
 #include <valhalla/baldr/graphtile.h>
 #include <valhalla/baldr/tilehierarchy.h>
-#include <valhalla/baldr/shared_tiles.h>
 #include <boost/property_tree/ptree.hpp>
 
 namespace valhalla {
@@ -109,8 +108,10 @@ class GraphReader {
   uint32_t GetEdgeDensity(const GraphId& edgeid);
 
  protected:
-  // Shared tiles - get_tile_ptr is null if not being used
-  SharedTiles& shared_tiles_;
+  // (Tar) extract of tiles - the contents are empty if not being used
+  struct tile_extract_t;
+  std::shared_ptr<const tile_extract_t> tile_extract_;
+  static std::shared_ptr<const GraphReader::tile_extract_t> get_extract_instance(const boost::property_tree::ptree& pt);
 
   // Information about where the tiles are kept
   const TileHierarchy tile_hierarchy_;

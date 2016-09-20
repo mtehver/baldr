@@ -131,16 +131,10 @@ GraphTile::GraphTile(const TileHierarchy& hierarchy, const GraphId& graphid)
   }
 }
 
-GraphTile::GraphTile(const GraphId& graphid, SharedTiles& shared_tiles) {
-  tile_pair tile_info = shared_tiles.GetTile(graphid);
-  if (tile_info.first == nullptr) {
-    // Tile does not exist
-    size_ = 0;
-  } else {
-    // Initialize the internal tile data structures using a pointer to the
-    // tile and the tile size
-    Initialize(tile_info.first, tile_info.second);
-  }
+GraphTile::GraphTile(const GraphId& graphid, char* ptr, size_t size) {
+  // Initialize the internal tile data structures using a pointer to the
+  // tile and the tile size
+  Initialize(ptr, size);
 }
 
 GraphTile::~GraphTile() {

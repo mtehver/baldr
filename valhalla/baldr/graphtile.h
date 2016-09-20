@@ -14,7 +14,7 @@
 #include <valhalla/baldr/edgeinfo.h>
 #include <valhalla/baldr/admininfo.h>
 #include <valhalla/baldr/tilehierarchy.h>
-#include <valhalla/baldr/shared_tiles.h>
+
 #include <valhalla/midgard/util.h>
 
 #include <boost/shared_array.hpp>
@@ -48,7 +48,7 @@ class GraphTile {
   /**
    * Constructor given the graph Id ... used for mmap
    */
-  GraphTile(const GraphId& graphid, SharedTiles& shared_tiles);
+  GraphTile(const GraphId& graphid, char* ptr, size_t size);
 
   /**
    * Destructor
