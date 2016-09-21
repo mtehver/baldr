@@ -26,15 +26,14 @@ struct GraphReader::tile_extract_t : public midgard::tar {
     //if you really meant to load it
     if(pt.get_optional<std::string>("tile_extract")) {
       //couldn't load it
-      if(mm.get() == nullptr) {
+      if(mm.get() == nullptr || contents.empty()) {
         LOG_WARN("Could not load tile extract");
         return;
       }
-      //some corrupt stuff
+      //loaded ok but with possibly bad blocks
+      LOG_INFO("Tile extract loaded");
       if(corrupt_blocks)
         LOG_WARN(std::to_string(corrupt_blocks) + " corrupt blocks in tile extract");
-      //loaded ok
-      LOG_INFO("Tile extract loaded");
       for(auto& c : contents) {
         try {
           auto id = GraphTile::GetTileId(c.first, "");
