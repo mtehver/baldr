@@ -30,6 +30,9 @@ struct GraphReader::tile_extract_t : public midgard::tar {
         LOG_WARN("Could not load tile extract");
         return;
       }
+      //some corrupt stuff
+      if(corrupt_blocks)
+        LOG_WARN(std::to_string(corrupt_blocks) + " corrupt blocks in tile extract");
       //loaded ok
       LOG_INFO("Tile extract loaded");
       for(auto& c : contents) {
