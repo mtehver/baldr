@@ -25,21 +25,22 @@ struct GraphReader::tile_extract_t : public midgard::tar {
   tile_extract_t(const boost::property_tree::ptree& pt):tar(pt.get<std::string>("tile_extract","")) {
     //if you really meant to load it
     if(pt.get_optional<std::string>("tile_extract")) {
-      //couldn't load it
-      if(mm.get() == nullptr || contents.empty()) {
-        LOG_WARN("Could not load tile extract");
-        return;
-      }
-      //loaded ok but with possibly bad blocks
-      LOG_INFO("Tile extract loaded");
-      if(corrupt_blocks)
-        LOG_WARN(std::to_string(corrupt_blocks) + " corrupt blocks in tile extract");
+      //map files to graph ids
       for(auto& c : contents) {
         try {
           auto id = GraphTile::GetTileId(c.first, "");
           tiles[id] = std::make_pair(const_cast<char*>(c.second.first), c.second.second);
         }
         catch(...){}
+      }
+      //couldn't load it
+      if(tiles.empty()) {
+        LOG_WARN("Tile extract could not be loaded");
+      }//loaded ok but with possibly bad blocks
+      else {
+        LOG_INFO("Tile extract successfully loaded");
+        if(corrupt_blocks)
+          LOG_WARN("Tile extract had " + std::to_string(corrupt_blocks) + " corrupt blocks");
       }
     }
   }
@@ -61,7 +62,7 @@ GraphReader::GraphReader(const boost::property_tree::ptree& pt)
 
   // Reserve cache (based on whether using individual tile files or shared,
   // mmap'd file
-  if (!tile_extract_->contents.empty()) {
+  if (!tile_extract_->tiles.empty()) {
     cache_.reserve(max_cache_size_/AVERAGE_MM_TILE_SIZE);
   } else {
     // Assume avg of 2 megs per tile
@@ -93,7 +94,7 @@ const GraphTile* GraphReader::GetGraphTile(const GraphId& graphid) {
   }
 
   // It wasn't in cache so create a GraphTile object.
-  if (!tile_extract_->contents.empty()) {
+  if (!tile_extract_->tiles.empty()) {
     // Do we have this tile
     auto t = tile_extract_->tiles.find(base);
     if(t == tile_extract_->tiles.cend())
