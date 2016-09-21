@@ -552,6 +552,25 @@ void DirectedEdge::set_max_down_slope(const float slope) {
   }
 }
 
+// Is there a sidewalk to the left of this directed edge?
+bool DirectedEdge::sidewalk_left() const {
+  return sidewalk_left_;
+}
+
+// Set the flag for a sidewalk to the left of this directed edge.
+void DirectedEdge::set_sidewalk_left(const bool sidewalk) {
+  sidewalk_left_ = sidewalk;
+}
+
+// Is there a sidewalk to the right of this directed edge?
+bool DirectedEdge::sidewalk_right() const {
+  return sidewalk_right_;
+}
+
+// Set the flag for a sidewalk to the right of this directed edge.
+void DirectedEdge::set_sidewalk_right(const bool sidewalk) {
+  sidewalk_right_ = sidewalk;
+}
 
 // Gets the turn type given the prior edge's local index
 Turn::Type DirectedEdge::turntype(const uint32_t localidx) const {

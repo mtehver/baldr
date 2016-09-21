@@ -7,16 +7,31 @@
 namespace valhalla {
 namespace baldr {
 
-// Access constants. Bit constants.
-constexpr uint8_t kAutoAccess       = 1;
-constexpr uint8_t kPedestrianAccess = 2;
-constexpr uint8_t kBicycleAccess    = 4;
-constexpr uint8_t kTruckAccess      = 8;
-constexpr uint8_t kEmergencyAccess  = 16;
-constexpr uint8_t kTaxiAccess       = 32;
-constexpr uint8_t kBusAccess        = 64;
-constexpr uint8_t kHOVAccess        = 128;
-constexpr uint8_t kAllAccess        = 255;
+// Access bit field constants. Access in directed edge allows 12 bits.
+constexpr uint16_t kAutoAccess       = 1;
+constexpr uint16_t kPedestrianAccess = 2;
+constexpr uint16_t kBicycleAccess    = 4;
+constexpr uint16_t kTruckAccess      = 8;
+constexpr uint16_t kEmergencyAccess  = 16;
+constexpr uint16_t kTaxiAccess       = 32;
+constexpr uint16_t kBusAccess        = 64;
+constexpr uint16_t kHOVAccess        = 128;
+constexpr uint16_t kWheelchairAccess = 256;
+constexpr uint16_t kAllAccess        = 4095;
+
+// TODO: review and update as needed
+enum class VehicleType {
+  kCar = 0,
+  kMotorcycle = 1,
+  kFourWheelDrive = 2
+};
+
+// TODO: review and update as needed
+enum class PedestrianType {
+  kFoot = 0,
+  kWheelChair = 1,
+  kSegway = 2
+};
 
 // Maximum number of transit records per tile
 constexpr uint32_t kMaxTransitDepartures    = 16777215;

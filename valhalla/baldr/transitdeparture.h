@@ -22,14 +22,17 @@ class TransitDeparture {
    * @param  headsign_offset  Offset to headsign within the text/name table.
    * @param  departure_time   Departure time (seconds from midnight)
    * @param  elapsed_time     Elapsed time to next stop
-   * @param  schedule_index   Index into schedule validity table for this tile
+   * @param  wheelchair_accessible  Is this a wheelchair accessible departure
+   * @param  bicycle_accessible   Is this a bicycle accessible departure
    */
   TransitDeparture(const uint32_t lineid, const uint32_t tripid,
                    const uint32_t routeid, const uint32_t blockid,
                    const uint32_t headsign_offset,
                    const uint32_t departure_time,
                    const uint32_t elapsed_time,
-                   const uint32_t schedule_index);
+                   const uint32_t schedule_index,
+                   const bool wheelchair_accessible,
+                   const bool bicycle_accessible);
 
   /**
    * Get the line Id - for lookup of all departures along this edge. Each
@@ -81,6 +84,18 @@ class TransitDeparture {
   uint32_t schedule_index() const;
 
   /**
+   * Get the wheelchair accessible flag
+   * @return  Returns the wheelchair accessible flag
+   */
+  bool wheelchair_accessible() const;
+
+  /**
+   * Get the bicycle accessible flag
+   * @return  Returns the bicycle accessible flag
+   */
+  bool bicycle_accessible() const;
+
+  /**
    * operator < - for sorting. Sort by line Id and departure time.
    * @param  other  Other transit departure to compare to.
    * @return  Returns true if line Id < other line Id or if line Ids are
@@ -89,21 +104,23 @@ class TransitDeparture {
   bool operator < (const TransitDeparture& other) const;
 
  protected:
-  uint32_t lineid_          : 20; // Line Id - lookup departures by unique line
-                                  // Id (which indicates a unique departure /
-                                  // arrival stop pair.
-  uint32_t routeid_         : 12; // Route index.
+  uint32_t lineid_                : 20;       // Line Id - lookup departures by unique line
+                                        // Id (which indicates a unique departure /
+                                        // arrival stop pair.
+  uint32_t routeid_               : 12; // Route index.
 
   uint32_t tripid_;               // TripId (internal).
-  uint32_t headsign_offset_;      // Headsign offset into the names/text list.
+  uint32_t headsign_offset_       : 30; // Headsign offset into the names/text list.
+  uint32_t wheelchair_accessible_ : 1;
+  uint32_t bicycle_accessible_    : 1;
 
-  uint32_t blockid_         : 20;  // Block Id
-  uint32_t schedule_index_  : 12; // Schedule validity index
+  uint32_t blockid_               : 20;  // Block Id
+  uint32_t schedule_index_        : 12; // Schedule validity index
 
 
-  uint32_t departure_time_  : 17; // Departure time (seconds from midnight)
-                                  // (86400 secs per day)
-  uint32_t elapsed_time_    : 15; // Time (secs) until arrival at next stop
+  uint32_t departure_time_        : 17; // Departure time (seconds from midnight)
+                                        // (86400 secs per day)
+  uint32_t elapsed_time_          : 15; // Time (secs) until arrival at next stop
 };
 
 }

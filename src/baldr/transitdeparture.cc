@@ -12,7 +12,9 @@ TransitDeparture::TransitDeparture(const uint32_t lineid,
                  const uint32_t headsign_offset,
                  const uint32_t departure_time,
                  const uint32_t elapsed_time,
-                 const uint32_t schedule_index) {
+                 const uint32_t schedule_index,
+                 const bool wheelchair_accessible,
+                 const bool bicycle_accessible) {
   // Protect against exceeding max. values
   if (lineid > kMaxTransitLineId) {
     throw std::runtime_error("Exceeded maximum transit line Ids per tile");
@@ -56,6 +58,9 @@ TransitDeparture::TransitDeparture(const uint32_t lineid,
   } else {
     elapsed_time_ = elapsed_time;
   }
+
+  wheelchair_accessible_ = wheelchair_accessible;
+  bicycle_accessible_ =  bicycle_accessible;
 }
 
 // Get the line Id - for lookup of all departures along an edge. Each line Id
@@ -97,6 +102,16 @@ uint32_t TransitDeparture::elapsed_time() const {
 // Get the schedule index.
 uint32_t TransitDeparture::schedule_index() const {
   return schedule_index_;
+}
+
+// Get the wheelchair accessible flag
+bool TransitDeparture::wheelchair_accessible() const {
+  return wheelchair_accessible_;
+}
+
+// Get the bicycle accessible flag
+bool TransitDeparture::bicycle_accessible() const {
+  return bicycle_accessible_;
 }
 
 // operator < - for sorting. Sort by line Id and departure time.
