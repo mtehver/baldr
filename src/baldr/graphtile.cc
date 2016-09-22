@@ -430,14 +430,14 @@ std::vector<SignInfo> GraphTile::GetSigns(const uint32_t idx) const {
   while (low <= high) {
     mid = (low + high) / 2;
     const auto& sign = signs_[mid];
-    //matching lineid and a workable time
+    //matching edge index
     if (idx == sign.edgeindex()) {
       found = mid;
       high = mid - 1;
-    }//need a smaller lineid
+    }//need a smaller index
     else if (idx < sign.edgeindex()) {
       high = mid - 1;
-    }//either need a bigger lineid or a later time
+    }//need a bigger index
     else {
       low = mid + 1;
     }
