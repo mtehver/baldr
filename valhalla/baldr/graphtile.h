@@ -206,8 +206,8 @@ class GraphTile {
                                            const uint32_t day,
                                            const uint32_t dow,
                                            bool  date_before_tile,
-                                           bool wheelchair = false,
-                                           bool bicycle = false) const;
+                                           bool wheelchair,
+                                           bool bicycle) const;
 
   /**
    * Get the departure given the directed edge Id and tripid
