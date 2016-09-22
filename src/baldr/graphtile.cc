@@ -494,8 +494,8 @@ const TransitDeparture* GraphTile::GetNextDeparture(const uint32_t lineid,
     // Make sure valid departure time
     if (departures_[found].departure_time() >= current_time &&
       GetTransitSchedule(departures_[found].schedule_index())->IsValid(day, dow, date_before_tile) &&
-      (!wheelchair || wheelchair == departures_[found].wheelchair_accessible()) &&
-      (!bicycle || bicycle == departures_[found].bicycle_accessible())) {
+      (!wheelchair || departures_[found].wheelchair_accessible()) &&
+      (!bicycle || departures_[found].bicycle_accessible())) {
       return &departures_[found];
     }
   }
