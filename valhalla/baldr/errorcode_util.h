@@ -200,7 +200,8 @@ namespace baldr {
       status_code(status_code),
       extra(extra){
       auto code_itr = error_codes.find(error_code);
-      error_code_message = code_itr == error_codes.cend() ? "" : code_itr->second;
+      error_code_message = (code_itr == error_codes.cend() ? "" : code_itr->second);
+      error_code_message += (extra ? *extra : "");
       code_itr = kHttpStatusCodes.find(status_code);
       status_code_body = code_itr == kHttpStatusCodes.cend() ? "" : code_itr->second;
 
