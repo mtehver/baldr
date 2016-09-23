@@ -78,7 +78,8 @@ bool GraphReader::DoesTileExist(const TileHierarchy& tile_hierarchy, const Graph
   std::string file_location = tile_hierarchy.tile_dir() + "/" +
     GraphTile::FileSuffix(graphid.Tile_Base(), tile_hierarchy);
   struct stat buffer;
-  return stat(file_location.c_str(), &buffer) == 0;
+  return tile_extract_->tiles.find(graphid) != tile_extract_->tiles.cend() ||
+    stat(file_location.c_str(), &buffer) == 0;
 }
 
 // Get a pointer to a graph tile object given a GraphId. Return nullptr
