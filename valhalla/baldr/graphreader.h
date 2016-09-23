@@ -107,6 +107,12 @@ class GraphReader {
    */
   uint32_t GetEdgeDensity(const GraphId& edgeid);
 
+  /**
+   * Gets back a set of available tiles
+   * @return  returns the list of available tiles
+   */
+  std::unordered_set<GraphId> GetTileSet() const;
+
  protected:
   // (Tar) extract of tiles - the contents are empty if not being used
   struct tile_extract_t;

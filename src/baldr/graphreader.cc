@@ -231,5 +231,34 @@ uint32_t GraphReader::GetEdgeDensity(const GraphId& edgeid) {
 }
 
 
+std::unordered_set<GraphId> GraphReader::GetTileSet() const {
+  //either mmap'd tiles
+  std::unordered_set<GraphId> tiles;
+  if(tile_extract_->tiles.size()) {
+    for(const auto& t : tile_extract_->tiles)
+      tiles.emplace(t.first);
+  }//or individually on disk
+  else {
+    //for each level
+    for(uint8_t level = 0; level < tile_hierarchy_.levels().rbegin()->first + 1; ++level) {
+      //crack open this level of tiles directory
+      boost::filesystem::path root_dir(tile_hierarchy_.tile_dir() + '/' + std::to_string(level) + '/');
+      if(boost::filesystem::exists(root_dir) && boost::filesystem::is_directory(root_dir)) {
+        //iterate over all the files in there
+        for (boost::filesystem::recursive_directory_iterator i(root_dir), end; i != end; ++i) {
+          if (!boost::filesystem::is_directory(i->path())) {
+            //add it if it can be parsed as a valid tile file name
+            try { tiles.emplace(GraphTile::GetTileId(i->path().string(), tile_hierarchy_.tile_dir())); }
+            catch (...) { }
+          }
+        }
+      }
+    }
+  }
+
+  //give them back
+  return tiles;
+}
+
 }
 }

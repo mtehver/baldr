@@ -16,6 +16,11 @@ namespace valhalla {
 namespace baldr {
 
 
+//TODO: hack and slash this. this should just be the levels and operations we commonly do
+//with them like getting the transit level or getting the highest or lowest non transit level
+//this can be static and accessed through a singleton or just static functions on the struct
+//tile_dir doesnt belong here anyway
+
 /**
  * class used to get information about a given hierarchy of tiles
  */
