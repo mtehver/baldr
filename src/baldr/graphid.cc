@@ -2,6 +2,7 @@
 
 #include "baldr/graphid.h"
 #include <boost/functional/hash.hpp>
+#include "config.h"
 
 namespace {
 // Invalid graphid.

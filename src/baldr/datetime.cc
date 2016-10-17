@@ -13,6 +13,7 @@
 #include <valhalla/baldr/graphconstants.h>
 
 #include "date_time_zonespec.h"
+#include "config.h"
 
 using namespace valhalla::baldr;
 

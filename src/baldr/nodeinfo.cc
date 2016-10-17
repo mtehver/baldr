@@ -5,6 +5,7 @@
 
 #include <baldr/datetime.h>
 #include <baldr/graphtile.h>
+#include "config.h"
 
 using namespace valhalla::baldr;
 

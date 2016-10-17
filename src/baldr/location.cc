@@ -2,6 +2,7 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/property_tree/json_parser.hpp>
+#include "config.h"
 
 #include "baldr/location.h"
 #include <valhalla/midgard/pointll.h>
