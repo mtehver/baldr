@@ -57,10 +57,13 @@ nobase_include_HEADERS = \
 	valhalla/baldr/edgeinfo.h \
 	valhalla/baldr/geojson.h \
 	valhalla/baldr/graphconstants.h \
+	valhalla/baldr/graphfsreader.h \
 	valhalla/baldr/graphid.h \
 	valhalla/baldr/graphreader.h \
 	valhalla/baldr/graphtile.h \
+	valhalla/baldr/graphtilefsstorage.h \
 	valhalla/baldr/graphtileheader.h \
+	valhalla/baldr/graphtilestorage.h \
 	valhalla/baldr/json.h \
 	valhalla/baldr/nodeinfo.h \
 	valhalla/baldr/location.h \
@@ -94,9 +97,11 @@ libvalhalla_baldr_la_SOURCES = \
 	src/baldr/double_bucket_queue.cc \
 	src/baldr/edgeinfo.cc \
 	src/baldr/geojson.cc \
+	src/baldr/graphfsreader.cc \
 	src/baldr/graphid.cc \
 	src/baldr/graphreader.cc \
 	src/baldr/graphtile.cc \
+	src/baldr/graphtilefsstorage.cc \
 	src/baldr/graphtileheader.cc \
 	src/baldr/nodeinfo.cc \
 	src/baldr/location.cc \

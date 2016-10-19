@@ -58,7 +58,7 @@ void TestCacheLimits() {
 
 void touch_tile(const uint32_t tile_id, const TileHierarchy& tile_hierarchy) {
   auto suffix = GraphTileFsStorage::FileSuffix({tile_id, 2, 0}, tile_hierarchy);
-  auto fullpath = tile_hierarchy.tile_dir() + '/' + suffix;
+  auto fullpath = std::dynamic_pointer_cast<GraphTileFsStorage>(tile_hierarchy.tile_storage())->GetTileDir() + '/' + suffix;
   boost::filesystem::create_directories(boost::filesystem::path(fullpath).parent_path());
   int fd = open(fullpath.c_str(), O_CREAT | O_WRONLY, 0644);
   if(fd >= 0)
@@ -69,9 +69,10 @@ void TestConnectivityMap() {
   //get the hierarchy to create some tiles
   boost::property_tree::ptree pt;
   pt.put("tile_dir", "test/gphrdr_test");
-  TileHierarchy th("test/gphrdr_test");
+  auto storage = std::make_shared<GraphTileFsStorage>("test/gphrdr_test");
+  TileHierarchy th(storage);
   const auto& level = th.levels().find(2)->second;
-  boost::filesystem::remove_all(th.tile_dir());
+  boost::filesystem::remove_all(storage->GetTileDir());
 
   //looks like this (XX) means no tile there:
   /*
@@ -121,7 +122,7 @@ void TestConnectivityMap() {
   if(conn.get_color({a2, 2, 0}) == conn.get_color({d0, 2, 0}))
     throw std::runtime_error("a is disjoint from d");
 
-  boost::filesystem::remove_all(th.tile_dir());
+  boost::filesystem::remove_all(storage->GetTileDir());
 }
 
 }

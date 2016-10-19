@@ -18,7 +18,8 @@ struct testable_graphtile : public valhalla::baldr::GraphTile {
 };
 
 void file_suffix() {
-  TileHierarchy h("/data/valhalla");
+  auto storage = std::make_shared<GraphTileFsStorage>("/data/valhalla");
+  TileHierarchy h(storage);
 
   if(GraphTileFsStorage::FileSuffix(GraphId(2, 2, 0), h) != "2/000/000/002.gph")
     throw std::runtime_error("Unexpected graphtile suffix");

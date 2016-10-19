@@ -1,4 +1,5 @@
 #include "baldr/tilehierarchy.h"
+#include "baldr/graphtilefsstorage.h"
 #include "baldr/graphid.h"
 #include <valhalla/midgard/pointll.h>
 
@@ -13,9 +14,10 @@ using namespace valhalla::midgard;
 
 namespace {
   void test_parse() {
-    TileHierarchy h("/data/valhalla");
+    auto storage = std::make_shared<GraphTileFsStorage>("/data/valhalla");
+    TileHierarchy h(storage);
 
-    if(h.tile_dir() != "/data/valhalla")
+    if(std::dynamic_pointer_cast<GraphTileFsStorage>(h.tile_storage())->GetTileDir() != "/data/valhalla")
       throw runtime_error("The tile directory was not correctly parsed");
     if(h.levels().size() != 3)
       throw runtime_error("Incorrect number of hierarchy levels");

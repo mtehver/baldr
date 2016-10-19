@@ -59,7 +59,13 @@ class GraphTileFsStorage : public GraphTileStorage {
   bool ReadTileRealTimeSpeeds(const GraphId& graphid, const TileHierarchy& tile_hierarchy, std::vector<uint8_t>& rts_data) const override;
 
   /**
-   * Get the tile Id given the full path to the file.
+   * Gets the tile directory.
+   * @return The tile directory.
+   */
+  const std::string& GetTileDir() const;
+
+  /**
+   * Gets the tile Id given the full path to the file.
    * @param  fname    Filename with complete path.
    * @param  tile_dir Base tile directory.
    * @return  Returns the tile Id.
