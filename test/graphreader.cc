@@ -1,6 +1,7 @@
 #include "test.h"
 
-#include "baldr/graphreader.h"
+#include "baldr/graphfsreader.h"
+#include "baldr/graphtilefsstorage.h"
 #include "baldr/connectivity_map.h"
 
 #include <fcntl.h>
@@ -11,11 +12,11 @@ using namespace valhalla::baldr;
 
 namespace {
 
-class test_reader : public GraphReader {
+class test_reader : public GraphFsReader {
  public:
-  using GraphReader::GraphReader;
-  using GraphReader::cache_size_;
-  using GraphReader::max_cache_size_;
+  using GraphFsReader::GraphFsReader;
+  using GraphFsReader::cache_size_;
+  using GraphFsReader::max_cache_size_;
 };
 
 test_reader make_cache(std::string cache_size) {
@@ -56,7 +57,7 @@ void TestCacheLimits() {
 }
 
 void touch_tile(const uint32_t tile_id, const TileHierarchy& tile_hierarchy) {
-  auto suffix = GraphTile::FileSuffix({tile_id, 2, 0}, tile_hierarchy);
+  auto suffix = GraphTileFsStorage::FileSuffix({tile_id, 2, 0}, tile_hierarchy);
   auto fullpath = tile_hierarchy.tile_dir() + '/' + suffix;
   boost::filesystem::create_directories(boost::filesystem::path(fullpath).parent_path());
   int fd = open(fullpath.c_str(), O_CREAT | O_WRONLY, 0644);

@@ -1,6 +1,7 @@
 #include "test.h"
 
 #include "baldr/graphtile.h"
+#include "baldr/graphtilefsstorage.h"
 
 #include <vector>
 
@@ -19,19 +20,19 @@ struct testable_graphtile : public valhalla::baldr::GraphTile {
 void file_suffix() {
   TileHierarchy h("/data/valhalla");
 
-  if(GraphTile::FileSuffix(GraphId(2, 2, 0), h) != "2/000/000/002.gph")
+  if(GraphTileFsStorage::FileSuffix(GraphId(2, 2, 0), h) != "2/000/000/002.gph")
     throw std::runtime_error("Unexpected graphtile suffix");
 
-  if(GraphTile::FileSuffix(GraphId(4, 2, 0), h) != "2/000/000/004.gph")
+  if(GraphTileFsStorage::FileSuffix(GraphId(4, 2, 0), h) != "2/000/000/004.gph")
     throw std::runtime_error("Unexpected graphtile suffix");
 
-  if(GraphTile::FileSuffix(GraphId(6897468, 2, 0), h) != "2/006/897/468.gph")
+  if(GraphTileFsStorage::FileSuffix(GraphId(6897468, 2, 0), h) != "2/006/897/468.gph")
     throw std::runtime_error("Unexpected graphtile suffix");
 
-  if(GraphTile::FileSuffix(GraphId(64799, 1, 0), h) != "1/064/799.gph")
+  if(GraphTileFsStorage::FileSuffix(GraphId(64799, 1, 0), h) != "1/064/799.gph")
     throw std::runtime_error("Unexpected graphtile suffix");
 
-  if(GraphTile::FileSuffix(GraphId(49, 0, 0), h) != "0/000/049.gph")
+  if(GraphTileFsStorage::FileSuffix(GraphId(49, 0, 0), h) != "0/000/049.gph")
     throw std::runtime_error("Unexpected graphtile suffix");
 }
 
